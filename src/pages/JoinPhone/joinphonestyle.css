@@ -1,0 +1,67 @@
+body {
+    
+    background-color: #111211;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    color: white;
+    background-image: url("../../assets/joinbc.jfif");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 15px;
+}
+
+div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+input[type=text] {
+    width: 60%;
+    padding: 9px 9px;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.6s;
+    outline: none;
+    background-color: #ffffffd8;
+}
+
+input[type=text]:focus {
+    border: 3px solid #555;
+    background-color: #ffffff78;
+    color: #000000;
+}
+
+button {
+    margin-left: 15px;
+    appearance: none;
+    background-color: #f292788d;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+}

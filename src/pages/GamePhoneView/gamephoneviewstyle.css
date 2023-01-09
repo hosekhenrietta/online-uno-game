@@ -1,0 +1,80 @@
+body {
+  background-image: url("../../assets/gamebc.jfif");
+  background-color: #111211;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+}
+
+img {
+  width: 100px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.messagediv {
+  background-color: rgba(153, 24, 20, 0.69);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: white;
+  border-radius: 25px;
+}
+
+.heand {
+  background-color: rgba(245, 155, 152, 0.022);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 25px;
+}
+
+.card {
+  margin: 5px;
+  margin-top: 30px;
+}
+
+.choosen-card {
+  margin: 5px;
+  margin-bottom: 30px;
+  /*border: solid black;*/
+}
+
+
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 25px;
+}
+
+button {
+  appearance: none;
+  background-color: #9e3417dc;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
