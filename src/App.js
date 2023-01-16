@@ -5,7 +5,7 @@ import { proxy, useSnapshot } from 'valtio'
 import * as Y from "yjs";
 import { bind } from "valtio-yjs";
 import { WebsocketProvider } from "y-websocket";
-import { state, addClient, initStore } from "./state/store";
+import { state, addClient, initStore, NewGame } from "./state/store";
 import { nanoid } from "nanoid";
 import { RoomMaker } from './pages/RoomMaker/RoomMaker';
 import { WaitingRoom } from './pages/WaitingRoom/WaitingRoom';
@@ -13,14 +13,14 @@ import { WaitingRoom } from './pages/WaitingRoom/WaitingRoom';
 const waitForSync = (websocketProvider) =>
   new Promise((resolve, reject) => {
     const timerId = setTimeout(() => reject("timeout"), 5000);
-    websocketProvider.on("sync", (isSynced  ) => {
+    websocketProvider.on("sync", (isSynced) => {
       if (isSynced) {
         clearTimeout(timerId);
         resolve();
       }
     });
   });
-const createSyncedStore = async (room , state ) => {
+const createSyncedStore = async (room, state) => {
   try {
     const ydoc = new Y.Doc();
     const websocketProvider = new WebsocketProvider(
@@ -49,7 +49,7 @@ function App() {
   const [nameIsCreated, setNameIsCreated] = useState(false)
   const [nickname, setNickname] = useState("")
 
-  
+
   const snap = useSnapshot(state)
   const synced = snap.synced
 
@@ -57,38 +57,34 @@ function App() {
   const isEmptySnapshot = Object.keys(snap).length === 0
   const handleCreate = async () => {
     let result = await createSyncedStore(room, state)
-    const clientId  = result.clientId
+    const clientId = result.clientId
     console.log(state.clients);
-    
-    if(state.clients === undefined)
-    {
+
+    if (state.clients === undefined) {
       setRoomISCreated(true)
       setClientId(clientId);
       initStore()
       addClient(clientId)
       setHost(true)
     }
-    else
-    {
+    else {
       alert("This room is already created! Change the name to an unused roomname or try to join to the prevoius.")
     }
   };
-  
+
   const handleJoin = async () => {
     let result = await createSyncedStore(room, state)
-    const clientId  = result.clientId;
-    if(state.clients !== undefined)
-    {
+    const clientId = result.clientId;
+    if (state.clients !== undefined) {
       setClientId(clientId);
       setRoomISCreated(true)
       addClient(clientId);
     }
-    else
-    {
+    else {
       alert("This room is not created yet! If you click on CREATE NEW ROOM you will create it.")
     }
-    
-    
+
+
   };
 
 
@@ -101,11 +97,11 @@ function App() {
 
 
 
-  const handleSetRoomEvent = (e ) => { setRoom(e) }
-  const handleSetGameISStartedEvent = (e ) => { setGameIsStarted(e) }
-  const handleNewGameEvent = () => { }
-  const handlesetNicknameEvent = (e ) => { setNickname(e) }
-  const handlesetNameIsCreatedEvent = (e ) => { setNameIsCreated(e) }
+  const handleSetRoomEvent = (e) => { setRoom(e) }
+  const handleSetGameISStartedEvent = (e) => { setGameIsStarted(e) }
+  const handleNewGameEvent = () => { NewGame()}
+  const handlesetNicknameEvent = (e) => { setNickname(e) }
+  const handlesetNameIsCreatedEvent = (e) => { setNameIsCreated(e) }
 
 
 
@@ -117,11 +113,9 @@ function App() {
         <RoomMaker room={room} createRoomEvent={handleCreate} handleJoinRoom={handleJoin} setRoomEvent={handleSetRoomEvent} />
         :
         isEmptySnapshot ? null : snap.game.currentStateID === -1 ?
-                    
-          <div>JÁTÉK</div>
-:
           <WaitingRoom room={room} host={host} clientId={clientId} nickname={nickname} clients={state.clients} state={state} NewGameEvent={handleNewGameEvent} setGameIsStartedEvent={handleSetGameISStartedEvent} setNicknameEvent={handlesetNicknameEvent} setNameIsCreatedEvent={handlesetNameIsCreatedEvent} />
-
+          :
+          <div>JÁTÉK</div>
       }
     </div >
   );

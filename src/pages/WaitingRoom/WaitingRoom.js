@@ -46,7 +46,7 @@ export function WaitingRoom({ room, host, clientId, nickname, clients, NewGameEv
                                 {
                                     (host) ?
                                         <button className="newGameButton copyButton" onClick={() => {
-                                            if( clients.length < 2 || clients.length > 4) { window.alert("Only 2,3 or 4 gamer can play this game")}
+                                            if( clients.length < 2 || clients.length > 6) { window.alert("Only 2 - 6 gamer can play this game")}
                                             else{
                                             state.game.numberOfPlayers = clients.length
                                             NewGameEvent(); setGameIsStartedEvent(true)
