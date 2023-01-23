@@ -12,14 +12,14 @@ export default function Box6() {
   const [bosIsOverRedLine, setBoxIsOverRedLine] = useState(0)
 
     useEffect(() => {
-        console.log(redLineRef);
-    }, [redLineRef])
+        console.log(bosIsOverRedLine);
+    }, [bosIsOverRedLine])
 
     const handleOnDrag = (info) => {
         console.log('====================================')
-        console.log(redLineRef.current.offsetTop + redLineRef.current.offsetHeight, boxRef.current.offset)
+        console.log(redLineRef.current.offsetTop + redLineRef.current.offsetHeight, document.getElementById('kocka').getBoundingClientRect())
         console.log('====================================')
-        if(redLineRef.current.offsetTop + redLineRef.current.offsetHeight > info.point.y) {
+        if(document.getElementById('kocka').getBoundingClientRect().top < 0) {
             console.log("if");
             setBoxIsOverRedLine(-1000)
         }
@@ -90,6 +90,7 @@ export default function Box6() {
       </div>
       <div className="box-container">
         <motion.div
+        id="kocka"
             ref={boxRef}
           className="box"
           drag
@@ -112,6 +113,7 @@ export default function Box6() {
             stiffness: 100,
             damping: 10, //100
           }}
+          //onClick={() => setBoxIsOverRedLine(-200)}
           
         ></motion.div>
       </div>
