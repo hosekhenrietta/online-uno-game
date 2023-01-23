@@ -1,6 +1,9 @@
 import React from 'react';
 import { useEffect, useState } from 'react'
 import './App.css';
+import Animations from './pages/Animations/Animations';
+import GameTable from './pages/GameTable/GameTable';
+
 import { proxy, useSnapshot } from 'valtio'
 import * as Y from "yjs";
 import { bind } from "valtio-yjs";
@@ -106,6 +109,10 @@ function App() {
 
 
   return (
+<div className="App">
+      <Animations />
+      
+    </div>
     <div className='App'>
 
       {!roomIsCreated ?
