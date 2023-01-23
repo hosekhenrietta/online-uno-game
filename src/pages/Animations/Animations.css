@@ -8,6 +8,20 @@
     padding-bottom: 20rem;
 }
 
+.hand-container {
+    padding-bottom: 20rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.red-line {
+    width: 1000px;
+    height: 100px;
+    border-color: red;
+    background-color: red;
+    margin-bottom: 40rem;
+}
+
 .box {
     width: 25rem;
     height: 25rem;
