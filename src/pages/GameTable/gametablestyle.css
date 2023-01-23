@@ -27,3 +27,10 @@
     display: flex;
     align-content: center;
 }
+
+.body {
+    background-image: url("../../assets/backgroundimage.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
