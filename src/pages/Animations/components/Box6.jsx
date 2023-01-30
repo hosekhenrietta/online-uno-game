@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { createRef } from "react";
-import { enableReactiveBindings } from "@syncedstore/yjs-reactive-bindings";
+//import { enableReactiveBindings } from "@syncedstore/yjs-reactive-bindings";
 
 export default function Box6() {
   const [isAnimating, setIsAnimating] = useState(false);

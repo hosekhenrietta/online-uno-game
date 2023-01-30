@@ -194,7 +194,8 @@
   color: #fff;
   font-weight: bold;
   background-color: rgba(0, 0, 0, 0.43);
-  border-radius: 20px;
+  border-radius: 4px;
+  cursor: pointer;
 
 }
 .playerName{
