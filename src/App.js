@@ -12,6 +12,7 @@ import { state, addClient, initStore, NewGame } from "./state/store";
 import { nanoid } from "nanoid";
 import { RoomMaker } from './pages/RoomMaker/RoomMaker';
 import { WaitingRoom } from './pages/WaitingRoom/WaitingRoom';
+import GamePhone from './pages/GamePhoneView/GamePhone';
 
 const waitForSync = (websocketProvider) =>
   new Promise((resolve, reject) => {
@@ -109,22 +110,10 @@ function App() {
 
 
   return (
-<div className="App">
-      <Animations />
-      
-    </div>
-    <div className='App'>
-
-      {!roomIsCreated ?
-
-        <RoomMaker room={room} createRoomEvent={handleCreate} handleJoinRoom={handleJoin} setRoomEvent={handleSetRoomEvent} />
-        :
-        isEmptySnapshot ? null : snap.game.currentStateID === -1 ?
-          <WaitingRoom room={room} host={host} clientId={clientId} nickname={nickname} clients={state.clients} state={state} NewGameEvent={handleNewGameEvent} setGameIsStartedEvent={handleSetGameISStartedEvent} setNicknameEvent={handlesetNicknameEvent} setNameIsCreatedEvent={handlesetNameIsCreatedEvent} />
-          :
-          <div>JÁTÉK</div>
-      }
-    </div >
+    <div className="App">
+      {{ /*<Animations />*/ }}
+      <GamePhone />
+    </div>  
   );
 }
 
