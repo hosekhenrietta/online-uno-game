@@ -3,8 +3,6 @@ import "./gametablestyle.css";
 import "./gametableviewstyle.css";
 import user from "../../assets/user.png";
 import discardedCards from "../../assets/cards/q.png";
-import draw from "../../assets/cards/draw.png";
-import { motion } from "framer-motion";
 import DrawDeck from "./components/DrawDeck";
 import { state } from "../../state/store";
 
