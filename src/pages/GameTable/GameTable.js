@@ -5,19 +5,27 @@ import user from "../../assets/user.png";
 import discardedCards from "../../assets/cards/q.png";
 import DrawDeck from "./components/DrawDeck";
 import { state } from "../../state/store";
+import { motion } from "framer-motion";
 
 export default function GameTable() {
-  const playerRef = useRef();
-  const [playerOneRef, setPlayerOneRef] = useState(new Array(4).fill().map((_, i) => createRef()));
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const [playerX, setPlayerX] = useState();
-  const [playerY, setPlayerY] = useState();
-
+  const [playersRef, setPlayersRef] = useState(
+    new Array(4).fill().map((_, i) => createRef())
+  );
+  const [animateTo, setAnimateTo] = useState({ x: 0, y: 0 });
+  const drawDeckRef = useRef();
 
   const playerdivs = [];
 
-  for (let index = 1; index < state.clients.length; index++) {
+  const handleDraw = () => {
+    setAnimateTo({
+      x: playersRef[0].current.offsetLeft - drawDeckRef.current.offsetLeft,
+      y: playersRef[0].current.offsetTop - drawDeckRef.current.offsetTop,
+    });
+  };
+
+  useEffect(() => {}, [playersRef]);
+
+  for (let index = 1; index < state.clients.length - 1; index++) {
     console.log("itt " + state.clients[index]);
 
     const length = state.clients.length;
@@ -26,80 +34,73 @@ export default function GameTable() {
     const line22 = [];
     const line3 = [];
 
-    if ((state.clients.length - index) > 0) {
+    if (state.clients.length - index > 0) {
       line21.push(
-        <div className="player">
+        <div className="player" ref={playersRef[index - 1]}>
           <img src={user} alt="" />
+          {index - 1}
         </div>
       );
       index++;
     }
 
-    if ((state.clients.length - index) > 0) {
+    if (state.clients.length - index > 0) {
       line22.push(
-        <div className="player">
+        <div className="player" ref={playersRef[index - 1]}>
           <img src={user} alt="" />
+          {index - 1}
         </div>
       );
       index++;
     }
 
-    if ((state.clients.length - index) > 0) {
+    if (state.clients.length - index > 0) {
       line1.push(
-        <div className="player">
+        <div className="player" ref={playersRef[index - 1]}>
           <img src={user} alt="" />
+          {index - 1}
         </div>
       );
       index++;
     }
 
-
-    if ((state.clients.length - index) > 0) {
+    if (state.clients.length - index > 0) {
       line3.push(
-        <div className="player">
+        <div className="player" ref={playersRef[index - 1]}>
           <img src={user} alt="" />
+          {index - 1}
         </div>
       );
       index++;
     }
-
 
     playerdivs.push(
       <div className="container">
-
-        <div className="line1">
-          {line1}
-        </div>
-
+        <div className="line1">{line1}</div>
 
         <div className="line2">
           {line21}
 
           <div className="table">
-            <div className="discarded-cards">
-              <img src={discardedCards} alt="" />
-            </div>
+            <motion.div
+              className="discarded-cards"
+              ref={drawDeckRef}
+              animate={{ x: animateTo.x, y: animateTo.y }}
+            >
+              <img src={discardedCards} alt="" onClick={() => handleDraw()} />
+            </motion.div>
           </div>
 
           {line22}
         </div>
 
-        <div className="line3">
-          {line3}
-        </div>
-
-
+        <div className="line3">{line3}</div>
       </div>
-
     );
   }
 
-  return (
-    <div>{playerdivs}</div>
-    
-  );
+  return <div>{playerdivs}</div>;
 }
-
 
 /*
 
