@@ -111,7 +111,6 @@ function App() {
 
   return (
     <div className="App">
-      {{ /*<Animations />*/ }}
       <GamePhone />
     </div>  
   );
