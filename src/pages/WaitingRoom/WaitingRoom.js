@@ -14,27 +14,7 @@ export function WaitingRoom({ room, host, clientId, nickname, clients, NewGameEv
                         <button className="saveNameButton copyButton" onClick={() => { window.location.reload() }} ><span>Try again</span></button>
                     </div> :
                     <div>
-
-                        <div className='WaitingRoomCards'>
-                            
-                            <div className='textmiddlecard'>
-                                <div className="content">
-                                    {clients.length} people have already joined the room! <br />
-                                    Set your nickname so they know who you are! </div>
-                                <div className='flex'>
-                                    <input placeholder={"Set your nickname here"} onChange={(e) => { setNicknameEvent(e.target.value) }} />
-                                    
-                                    <button className="saveNameButton" onClick={() => { ( nickname.length ==0 || nickname == null)? window.alert("The input cannot be empty"):clients.filter(el => el.id === clientId)[0].nickname = nickname; setNameIsCreatedEvent(true) }}><span className='text'>Save name</span></button>
-                                </div>
-                            </div>
-                            <div className='textmiddlecard'>
-                                <div className="content">
-                                    If you want more people to join, send them this code: <span className='roomcode'>{room}</span>
-                                    <br /> Or copy it by clicking the button:
-                                </div>
-                                <button className="saveNameButton copyButton" onClick={() => { navigator.clipboard.writeText(room) }} ><span>copy the room</span></button>
-                            </div>
-                        </div>
+                        Roomcode: <span className='roomcode' onClick={() => { navigator.clipboard.writeText(room) }}>{room}</span>
                         <div className='textmiddlecard'>
                             <div className="content">
                                 <p>They are already waiting: </p>
@@ -46,7 +26,7 @@ export function WaitingRoom({ room, host, clientId, nickname, clients, NewGameEv
                                 {
                                     (host) ?
                                         <button className="newGameButton copyButton" onClick={() => {
-                                            if( clients.length < 2 || clients.length > 6) { window.alert("Only 2 - 6 gamer can play this game")}
+                                            if( clients.length < 3 || clients.length > 12) { window.alert("Only 2 - 12 gamer can play this game")}
                                             else{
                                             state.game.numberOfPlayers = clients.length
                                             NewGameEvent(); setGameIsStartedEvent(true)
@@ -67,3 +47,17 @@ export function WaitingRoom({ room, host, clientId, nickname, clients, NewGameEv
 
     );
 }
+
+/* 
+                     <div className='WaitingRoomCards'>
+                            
+                           
+                            <div className='textmiddlecard'>
+                                <div className="content">
+                                    If you want more people to join, send them this code: <span className='roomcode'>{room}</span>
+                                    <br /> Or copy it by clicking the button:
+                                </div>
+                                <button className="saveNameButton copyButton" onClick={() => { navigator.clipboard.writeText(room) }} ><span>copy the room</span></button>
+                            </div>
+                        </div>
+*/
