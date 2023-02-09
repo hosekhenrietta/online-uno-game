@@ -5,28 +5,68 @@ import user from "../../assets/user.png";
 import discardedCards from "../../assets/cards/q.png";
 import DrawDeck from "./components/DrawDeck";
 import { state } from "../../state/store";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function GameTable() {
   const [playersRef, setPlayersRef] = useState(
     new Array(4).fill().map((_, i) => createRef())
   );
+  const [drawDeckCards, setDrawDeckCards] = useState([
+    {
+      id: 1,
+      img: require("../../assets/cards/draw.png"),
+      ref: createRef(),
+    },
+    {
+      id: 2,
+      img: require("../../assets/cards/draw.png"),
+      ref: createRef(),
+    },
+    {
+      id: 3,
+      img: require("../../assets/cards/draw.png"),
+      ref: createRef(),
+    },
+    {
+      id: 4,
+      img: require("../../assets/cards/draw.png"),
+      ref: createRef(),
+    },
+  ]);
+  const [newGameDrawDeckCards, setNewGameDrawDeckCards] = useState(drawDeckCards)
   const [animateTo, setAnimateTo] = useState({ x: 0, y: 0 });
-  const drawDeckRef = useRef();
+  const [currentPlayer, setCurrentPlayer] = useState(0);
 
   const playerdivs = [];
 
-  const handleDraw = () => {
+  const handleDraw = (id, index) => {
     setAnimateTo({
-      x: playersRef[0].current.offsetLeft - drawDeckRef.current.offsetLeft,
-      y: playersRef[0].current.offsetTop - drawDeckRef.current.offsetTop,
+      x:
+        playersRef[currentPlayer].current.offsetLeft -
+        drawDeckCards[index].ref.current.offsetLeft,
+      y:
+        playersRef[currentPlayer].current.offsetTop -
+        drawDeckCards[index].ref.current.offsetTop,
     });
+    setCurrentPlayer(
+      currentPlayer === state.clients.length - 2 ? 0 : currentPlayer + 1
+    );
+    setDrawDeckCards(
+      drawDeckCards.filter((drawDeckCard) => drawDeckCard.id !== id)
+    );
+    
   };
 
-  useEffect(() => {}, [playersRef]);
+  useEffect(() => {
+    console.log(animateTo.x, animateTo.y);
+  }, [animateTo])
+
+  const handleNewGameOnClick = () => {
+    setCurrentPlayer(0);
+    setDrawDeckCards(newGameDrawDeckCards)
+  };
 
   for (let index = 1; index < state.clients.length - 1; index++) {
-    console.log("itt " + state.clients[index]);
 
     const length = state.clients.length;
     const line1 = [];
@@ -82,14 +122,30 @@ export default function GameTable() {
           {line21}
 
           <div className="table">
-            <motion.div
-              className="discarded-cards"
-              ref={drawDeckRef}
-              animate={{ x: animateTo.x, y: animateTo.y }}
-            >
-              <img src={discardedCards} alt="" onClick={() => handleDraw()} />
-            </motion.div>
+            <AnimatePresence>
+              {
+                drawDeckCards.map((drawDeckCard, index) =>
+                  <motion.div
+                  key={drawDeckCard.id}
+                  exit={{
+                    x: animateTo.x,
+                    y: animateTo.y,
+                  }}
+                  className="discarded-cards"
+                  style={{ left: index * 10}}
+                  ref={drawDeckCard.ref}
+                >
+                  <img
+                    src={drawDeckCard.img}
+                    alt=""
+                    onClick={() => handleDraw(drawDeckCard.id, index)}
+                  />
+                  {index}
+                </motion.div>)
+              }
+            </AnimatePresence>
           </div>
+          <button onClick={() => handleNewGameOnClick()}>New game</button>
 
           {line22}
         </div>
