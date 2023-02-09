@@ -167,7 +167,7 @@ console.log("mobil: " + isMobile);
 
                 :
 
-                <GameTable room={room} clientId={clientId} /> // Itt a OnPhone verzio kellene
+                <GamePhone /> // Itt a OnPhone verzio kellene
 
 
           :
