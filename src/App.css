@@ -96,10 +96,24 @@
   background-attachment: fixed;
   background-size: cover;
   height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .Rotate img{
   width: 300px;
   height: 300px;
+}
+.Rotate .rotetecard{
+  height: 300px;
+  margin: 14px;
+  color: #000000;
+  background-color: rgba(234, 187, 187, 0.27);
+  border-radius: 10px;
+}
+
+.rotetecard .content {
+  margin: 15px;
 }
 
 
