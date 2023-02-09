@@ -16,6 +16,7 @@ import { WaitingRoom } from "./pages/WaitingRoom/WaitingRoom";
 import { WaitingRoomOnPhone } from "./pages/WaitingRoom/WaitingRoomOnPhone";
 import { JoinRoomOnPhone } from "./pages/RoomMaker/JoinRoomOnPhone";
 import GamePhone from "./pages/GamePhoneView/GamePhone";
+import { Rotate } from './pages/WarningPages/Rotate';
 
 const waitForSync = (websocketProvider) =>
   new Promise((resolve, reject) => {
@@ -59,9 +60,9 @@ function App() {
 
   const isEmptySnapshot = Object.keys(snap).length === 0;
   const handleCreate = async () => {
-    let result = await createSyncedStore(room, state);
-    const clientId = result.clientId;
-    console.log(state.clients);
+    let result = await createSyncedStore(room, state)
+    const clientId = result.clientId
+    console.log("alma"+state.clients);
 
     if (state.clients === undefined) {
       setRoomISCreated(true);
@@ -118,6 +119,7 @@ function App() {
   console.log(w + " - " + h + " " + (w < h));
 
   window.mobileCheck = function () {
+    console.log("belejott");
     let check = false;
     (function (a) {
       if (
@@ -133,63 +135,58 @@ function App() {
     return check;
   };
 
-  const isMobile = navigator.userAgentData.mobile; //resolves true/false
-  console.log("mobil: " + isMobile);
-
+  //const isMobile = navigator.userAgentData.mobile; //resolves true/false
+  
+  /*console.log(clientId +" " + state.clients[0]);
+   if (!isMobile) {
+    if (roomIsCreated) {
+      isMobile = (clientId != state.clients[0])
+    }
+      
+    } */
+const isMobile= ((w<=844 && h<=390) || (h<=844 && w<=390));
+console.log("mobil: " + isMobile);
   // <Animations />
   //   w < h ? <div>Rorditsd meg a telefonod!</div>
   return (
     <div className="App">
-      {isMobile || w < h ? (
-        !roomIsCreated ? (
-          <JoinRoomOnPhone
-            room={room}
-            createRoomEvent={handleCreate}
-            handleJoinRoom={handleJoin}
-            setRoomEvent={handleSetRoomEvent}
-          />
-        ) : isEmptySnapshot ? null : snap.game.currentStateID === -1 ? (
-          <WaitingRoomOnPhone
-            room={room}
-            host={host}
-            clientId={clientId}
-            nickname={nickname}
-            clients={state.clients}
-            state={state}
-            NewGameEvent={handleNewGameEvent}
-            setGameIsStartedEvent={handleSetGameISStartedEvent}
-            setNicknameEvent={handlesetNicknameEvent}
-            setNameIsCreatedEvent={handlesetNameIsCreatedEvent}
-          />
-        ) : (
-          <GamePhone />
-        )
-      ) : !roomIsCreated ? (
-        <RoomMaker
-          room={room}
-          createRoomEvent={handleCreate}
-          handleJoinRoom={handleJoin}
-          setRoomEvent={handleSetRoomEvent}
-        />
-      ) : isEmptySnapshot ? null : snap.game.currentStateID === -1 ? (
-        host ? (
-          <WaitingRoom
-            room={room}
-            host={host}
-            clientId={clientId}
-            nickname={nickname}
-            clients={state.clients}
-            state={state}
-            NewGameEvent={handleNewGameEvent}
-            setGameIsStartedEvent={handleSetGameISStartedEvent}
-            setNicknameEvent={handlesetNicknameEvent}
-            setNameIsCreatedEvent={handlesetNameIsCreatedEvent}
-          />
-        ) : null
-      ) : (
-        <GameTable room={room} clientId={clientId} />
-      )}
-    </div>
+
+      {
+        (isMobile) ?
+        //telefonon
+        (w<h) ? 
+        <Rotate/> 
+        :
+            !roomIsCreated ?
+
+              <JoinRoomOnPhone room={room} createRoomEvent={handleCreate} handleJoinRoom={handleJoin} setRoomEvent={handleSetRoomEvent} />
+              :
+              isEmptySnapshot ? null : snap.game.currentStateID === -1 ?
+
+                  <WaitingRoomOnPhone room={room} host={host} clientId={clientId} nickname={nickname} clients={state.clients} state={state} NewGameEvent={handleNewGameEvent} setGameIsStartedEvent={handleSetGameISStartedEvent} setNicknameEvent={handlesetNicknameEvent} setNameIsCreatedEvent={handlesetNameIsCreatedEvent} />
+
+                :
+
+                <GameTable room={room} clientId={clientId} /> // Itt a OnPhone verzio kellene
+
+
+          :
+        // laptopon
+          !roomIsCreated ?
+
+            <RoomMaker room={room} createRoomEvent={handleCreate} handleJoinRoom={handleJoin} setRoomEvent={handleSetRoomEvent} />
+            :
+            isEmptySnapshot ? null : snap.game.currentStateID === -1 ?
+
+              (host) ?
+                <WaitingRoom room={room} host={host} clientId={clientId} nickname={nickname} clients={state.clients} state={state} NewGameEvent={handleNewGameEvent} setGameIsStartedEvent={handleSetGameISStartedEvent} setNicknameEvent={handlesetNicknameEvent} setNameIsCreatedEvent={handlesetNameIsCreatedEvent} />
+                :
+                null
+              :
+              <GameTable room={room} clientId={clientId} />
+      }
+    </div >
+
   );
 }
 
