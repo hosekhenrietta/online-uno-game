@@ -45,6 +45,9 @@
     align-items: center;
     background-color: rgba(10, 10, 10, 0.838);
     border-radius: 25px;
+    height: 220px;
+    width: 200px;
+    position: relative
 }
 
 img{
@@ -55,4 +58,5 @@ img{
     background-color: rgba(255, 255, 255, 0);
     margin: 20px;
     width: fit-content;
+    position: absolute;
 }

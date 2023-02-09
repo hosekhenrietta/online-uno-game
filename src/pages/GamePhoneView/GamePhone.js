@@ -32,11 +32,6 @@ export default function GamePhone() {
     },
   ]);
 
-
-  useEffect(() => {
-    console.log(cards);
-  }, [cards]);
-
   const handleCardOnClick = (index) => {
     let helperCards = [...cards];
 
