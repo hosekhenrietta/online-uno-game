@@ -10,9 +10,10 @@ export function initStore() {
             currentStateID: -1, // -1 - nem kezdodott 0- betolt,kártyakezekben 1-játékos akcióthajt létre
             players: [], //name, id, hand []
             drawingDeck: [],
-            lastDiscardedCard: []
+            lastDiscardedCard: [],
             // 10-kimarad, 11-sorrendváltozás, 12-+2
             //black: 13-sima. 14-+2, 15-+4
+            plus2counter: 0
         },
         synced: false,
         clients: [], // clientID, nickname
@@ -57,7 +58,6 @@ export function addPlayers() {
     state.players.push({ id: index, clientId: state.game.clients[index].clientId, hand: [] }); 
    }
 }
-
 export function addClient(clientId) {
     state.clients.push({ id: clientId, nickname: "" });
 }

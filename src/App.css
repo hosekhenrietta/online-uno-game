@@ -38,14 +38,12 @@
   }
 }
 
-
 .RoomMaker {
   background-image: url("assets/backgroundimage.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
   height: 100vh;
-
 }
 
 .RoomMaker input {
@@ -92,12 +90,26 @@
   border-radius: 10px;
 }
 
+.Rotate {
+  background-image: url("assets/backgroundimage.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  height: 90vh;
+}
+.Rotate img{
+  width: 300px;
+  height: 300px;
+}
+
 
 .WaitingRoom {
   background-image: url("assets/backgroundimage.jpg");
   font-size: 200%;
   height: 100vh;
-  background-size: contain;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 .WaitingRoom input {
@@ -211,7 +223,7 @@
 }
 
 .WaitingRoomCards {
-  margin-top: 50px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
 }
