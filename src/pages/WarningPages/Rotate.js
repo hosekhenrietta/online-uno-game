@@ -1,6 +1,4 @@
 import React from "react";
-import { useSnapshot } from "valtio";
-import { state } from "../../state/store";
 
 export function Rotate() {
 

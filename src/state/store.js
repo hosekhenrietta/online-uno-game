@@ -7,12 +7,12 @@ export function initStore() {
         game: {
             numberOfPlayers: -1,
             currentPlayerID: -1,
-            currentStateID: -1, // -1 - nem kezdodott 0- betolt,kártyakezekben 1-játékos akcióthajt létre
+            currentStateID: -1, // -1 - nem kezdodott 0- betolt,kártyakezekben 1-játékos akcióthajt végre
             players: [], //name, id, hand []
             drawingDeck: [],
             lastDiscardedCard: [],
             // 10-kimarad, 11-sorrendváltozás, 12-+2
-            //black: 13-sima. 14-+2, 15-+4
+            //black: 13-sima. 14-+4
             plus2counter: 0
         },
         synced: false,
@@ -35,7 +35,7 @@ export function createdrawingDeck() {
             state.game.drawingDeck.push(["red", id], ["blue", id], ["green", id], ["yellow", id]);
         }
 
-        for (let id = 13; id <= 15; id++) {
+        for (let id = 13; id <= 14; id++) {
             state.game.drawingDeck.push(["black", id]);
         }
     }
@@ -57,6 +57,16 @@ export function addPlayers() {
    for (let index = 0; index < state.game.clients.length; index++) {
     state.players.push({ id: index, clientId: state.game.clients[index].clientId, hand: [] }); 
    }
+}
+export function discard( playerID, cardID){
+
+    if (canDiscard(state.game.players[playerID].hand[cardID][0],state.game.players[playerID].hand[cardID][1])) {
+        state.game.lastDiscardedCard = [state.game.players[playerID].hand[cardID][0],state.game.players[playerID].hand[cardID][1]]
+        state.game.players[playerID].hand[cardID].splice(cardID,cardID);
+    }
+}
+export function canDiscard(cardcolor, cardnumber){    
+    return ((state.game.lastDiscardedCard[0] == cardcolor) || (state.game.lastDiscardedCard[1] == cardnumber));
 }
 export function addClient(clientId) {
     state.clients.push({ id: clientId, nickname: "" });

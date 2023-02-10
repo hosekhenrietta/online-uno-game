@@ -2,7 +2,7 @@ import { React, useRef, useState, useEffect, createRef } from "react";
 import "./gametablestyle.css";
 import "./gametableviewstyle.css";
 import user from "../../assets/user.png";
-import discardedCards from "../../assets/cards/q.png";
+import discardedCards from "../../assets/cards/red5.png";
 import DrawDeck from "./components/DrawDeck";
 import { state } from "../../state/store";
 

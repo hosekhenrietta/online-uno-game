@@ -1,6 +1,4 @@
 import React from "react";
-import { useSnapshot } from "valtio";
-import { state } from "../../state/store";
 
 export function WaitingRoomOnPhone({ room, host, clientId, nickname, clients, NewGameEvent, setGameIsStartedEvent, setNicknameEvent, setNameIsCreatedEvent }) {
 
@@ -17,7 +15,7 @@ export function WaitingRoomOnPhone({ room, host, clientId, nickname, clients, Ne
                                 <div className='flex'>
                                     <input placeholder={"Set your nickname here"} onChange={(e) => { setNicknameEvent(e.target.value) }} />
 
-                                    <button className="saveNameButton" onClick={() => { (nickname.length == 0 || nickname == null) ? window.alert("The input cannot be empty") : clients.filter(el => el.id === clientId)[0].nickname = nickname; setNameIsCreatedEvent(true) }}><span className='text'>Save name</span></button>
+                                    <button className="saveNameButton" onClick={() => { (nickname.length === 0 || nickname === null) ? window.alert("The input cannot be empty") : clients.filter(el => el.id === clientId)[0].nickname = nickname; setNameIsCreatedEvent(true) }}><span className='text'>Save name</span></button>
                                 </div>
                             </div>
 
