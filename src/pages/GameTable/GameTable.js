@@ -3,71 +3,83 @@ import "./gametablestyle.css";
 import "./gametableviewstyle.css";
 import user from "../../assets/user.png";
 import discardedCards from "../../assets/cards/q.png";
+import drawDeckCard from "../../assets/cards/draw.png"
 import DrawDeck from "./components/DrawDeck";
 import { state } from "../../state/store";
-import { AnimatePresence, motion } from "framer-motion";
+import { animate, AnimatePresence, motion } from "framer-motion";
 
 export default function GameTable() {
   const [playersRef, setPlayersRef] = useState(
-    new Array(4).fill().map((_, i) => createRef())
+    new Array(2).fill().map((_, i) => createRef())
   );
-  const [drawDeckCards, setDrawDeckCards] = useState([
-    {
-      id: 1,
-      img: require("../../assets/cards/draw.png"),
-      ref: createRef(),
-    },
-    {
-      id: 2,
-      img: require("../../assets/cards/draw.png"),
-      ref: createRef(),
-    },
-    {
-      id: 3,
-      img: require("../../assets/cards/draw.png"),
-      ref: createRef(),
-    },
-    {
-      id: 4,
-      img: require("../../assets/cards/draw.png"),
-      ref: createRef(),
-    },
-  ]);
-  const [newGameDrawDeckCards, setNewGameDrawDeckCards] = useState(drawDeckCards)
-  const [animateTo, setAnimateTo] = useState({ x: 0, y: 0 });
+  const [drawCardRef, setDrawCardRef] = useState([createRef()])
+  const [drawCard, setDrawCard] = useState({ x: 0, y: 0})
+  console.log(drawCardRef);
+  const [drawDeckCards, setDrawDeckCards] = useState([{ id: 0, x: 0, y: 0 }])
+  // [
+  //   {
+  //     id: 1,
+  //     img: require("../../assets/cards/draw.png"),
+  //     ref: createRef(),
+  //   },
+  //   {
+  //     id: 2,
+  //     img: require("../../assets/cards/draw.png"),
+  //     ref: createRef(),
+  //   },
+  //   {
+  //     id: 3,
+  //     img: require("../../assets/cards/draw.png"),
+  //     ref: createRef(),
+  //   },
+  //   {
+  //     id: 4,
+  //     img: require("../../assets/cards/draw.png"),
+  //     ref: createRef(),
+  //   },
+  // ];
+  const [newGameDrawDeckCards, setNewGameDrawDeckCards] =
+    useState(drawDeckCards);
+  const originalDrawCard = drawCard
+  const [animateTo, setAnimateTo] = useState([{ x: 0, y: 0 }]);
   const [currentPlayer, setCurrentPlayer] = useState(0);
 
-  const playerdivs = [];
-
-  const handleDraw = (id, index) => {
-    setAnimateTo({
-      x:
-        playersRef[currentPlayer].current.offsetLeft -
-        drawDeckCards[index].ref.current.offsetLeft,
-      y:
-        playersRef[currentPlayer].current.offsetTop -
-        drawDeckCards[index].ref.current.offsetTop,
-    });
-    setCurrentPlayer(
-      currentPlayer === state.clients.length - 2 ? 0 : currentPlayer + 1
-    );
-    setDrawDeckCards(
-      drawDeckCards.filter((drawDeckCard) => drawDeckCard.id !== id)
-    );
-    
-  };
+  useEffect(() => {
+    console.log(playersRef[0]);
+  }, [playersRef])
 
   useEffect(() => {
-    console.log(animateTo.x, animateTo.y);
-  }, [animateTo])
+    console.log("drawCardRef", drawCardRef)
+    //setDrawCard({ x: drawCardRef.current.offsetLeft, y: drawCardRef.current.offsetTop })
+    setDrawDeckCards([...drawDeckCards, { x: drawCardRef[0].current.offsetLeft, y: drawCardRef[0].current.offsetTop }])
+    setAnimateTo([...animateTo, { x: 0, y: 0 }])
+  }, [drawCardRef])
 
   const handleNewGameOnClick = () => {
     setCurrentPlayer(0);
-    setDrawDeckCards(newGameDrawDeckCards)
+    setDrawCard({ x: drawCardRef.current.offsetLeft, y: drawCardRef.current.offsetTop })
+    setDrawDeckCards([{ id: 0, x: drawCardRef[0].current.offsetLeft, y: drawCardRef[0].current.offsetTop }])
+    setAnimateTo([{ x: 0, y: 0 }])
   };
 
-  for (let index = 1; index < state.clients.length - 1; index++) {
+  const handleDrawOnClick = (index) => {
+    console.log(currentPlayer, playersRef.length);
+    console.log("playersRef",drawCardRef, index);
+    console.log("Difference:",playersRef[currentPlayer].current.offsetTop - drawCardRef[index].current.offsetTop, playersRef[currentPlayer].current.offsetLeft - drawCardRef[index].current.offsetLeft);
+    //setAnimateTo([...animateTo, { x: 0, y: 0}])
+    setAnimateTo(animateTo.map((animate, animateIndex) => animateIndex === index ? {
+       x:
+         playersRef[currentPlayer].current.offsetLeft - drawCardRef[index].current.offsetLeft,
+       y:
+         playersRef[currentPlayer].current.offsetTop - drawCardRef[index].current.offsetTop,
+    } : { x: animate.x, y: animate.y}));
+    //setDrawCard({ x: drawCard.x - animateTo.x, y: drawCard.x - animateTo.y })
+    setDrawDeckCards([...drawDeckCards, { id: drawDeckCards.length, x: drawCardRef[0].current.offsetLeft, y: drawCardRef[0].current.offsetTop }])
+    setDrawCardRef([...drawCardRef, createRef()])
+    setCurrentPlayer(currentPlayer + 1 < playersRef.length ? currentPlayer + 1 : 0)
+  }
 
+  for (let index = 1; index < state.clients.length - 1; index++) {
     const length = state.clients.length;
     const line1 = [];
     const line21 = [];
@@ -114,48 +126,88 @@ export default function GameTable() {
       index++;
     }
 
-    playerdivs.push(
-      <div className="container">
-        <div className="line1">{line1}</div>
+    // playerdivs.push(
+    //   <div className="container">
 
-        <div className="line2">
-          {line21}
+    //     <div className="line1">{line1}</div>
 
-          <div className="table">
-            <AnimatePresence>
-              {
-                drawDeckCards.map((drawDeckCard, index) =>
-                  <motion.div
-                  key={drawDeckCard.id}
-                  exit={{
-                    x: animateTo.x,
-                    y: animateTo.y,
-                  }}
-                  className="discarded-cards"
-                  style={{ left: index * 10}}
-                  ref={drawDeckCard.ref}
-                >
-                  <img
-                    src={drawDeckCard.img}
-                    alt=""
-                    onClick={() => handleDraw(drawDeckCard.id, index)}
-                  />
-                  {index}
-                </motion.div>)
-              }
-            </AnimatePresence>
-          </div>
-          <button onClick={() => handleNewGameOnClick()}>New game</button>
+    //     <div className="line2">
+    //       {line21}
 
-          {line22}
-        </div>
+    //       <div className="table">
+    //         <AnimatePresence>
+    //           {
+    //             drawDeckCards.map((drawDeckCard, index) =>
+    //               <motion.div
+    //               key={drawDeckCard.id}
+    //               exit={{
+    //                 x: animateTo.x,
+    //                 y: animateTo.y,
+    //               }}
+    //               className="discarded-cards"
+    //               style={{ left: index * 10}}
+    //               ref={drawDeckCard.ref}
+    //             >
+    //               <img
+    //                 src={drawDeckCard.img}
+    //                 alt=""
+    //                 onClick={() => handleDraw(drawDeckCard.id, index)}
+    //               />
+    //               {index}
+    //             </motion.div>)
+    //           }
+    //         </AnimatePresence>
+    //       </div>
+    //       <button onClick={() => handleNewGameOnClick()}>New game</button>
 
-        <div className="line3">{line3}</div>
-      </div>
-    );
+    //       {line22}
+    //     </div>
+
+    //     <div className="line3">{line3}</div>
+    //   </div>
+    // );
   }
 
-  return <div>{playerdivs}</div>;
+  return (
+    <div className="gameTable">
+      <div className="rowOne">
+        
+      </div>
+      <div className="rowTwo">
+        <div className="playerOne" ref={playersRef[0]}>
+          <img src={user} alt="playerOne" className="playerImage" />
+        </div>
+        <AnimatePresence>
+          <div className="deckTable">
+              <img src={discardedCards} alt="discardedCards" className="cardImage" />
+              { 
+                //<motion.img src={drawDeckCard} animate={{ x: animateTo.x, y: animateTo.y }} alt="drawDeckCard" className="cardImage" ref={drawCardRef} onClick={() => handleDrawOnClick()}/> 
+              }
+              { // drawDeckCards
+                animateTo.map((card, index) => {
+                  console.log(index, animateTo[index], animateTo);
+                  return <motion.img
+                          //key={card.id}
+                          src={drawDeckCard} 
+                          animate={{ x: animateTo[index].x, y: animateTo[index].y }} 
+                          alt="drawDeckCard" 
+                          className="cardImage" 
+                          ref={drawCardRef[index]} 
+                          onClick={() => handleDrawOnClick(index)}
+                        /> 
+                })
+               }
+          </div>
+        </AnimatePresence>
+        <div className="playerTwo" ref={playersRef[1]}>
+          <img src={user} alt="playerTwo" className="playerImage" />
+        </div>
+      </div>
+      <div className="rowThree">
+        <button onClick={() => handleNewGameOnClick()}>New game</button>
+      </div>
+    </div>
+  );
 }
 
 /*
