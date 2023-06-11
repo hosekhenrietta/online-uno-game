@@ -1,22 +1,19 @@
-body {
-  background-image: url("../../assets/gamebc.jfif");
-  background-color: #111211;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-  font-family: Arial, sans-serif;
+* {
+  box-sizing: border-box;
 }
 
-img {
-  width: 100px;
+#container {
+  background-image: url("../../assets/backgroundimage.jpg");
+  width: 100vw;
+  margin: auto;
+  position: absolute;
+  top:0;bottom:0; /* vertical center */
+  left:0;right:0; /* horizontal center */
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-}
-
-.messagediv {
+#container .messagediv {
   background-color: rgba(153, 24, 20, 0.69);
   display: flex;
   flex-direction: row;
@@ -24,19 +21,15 @@ img {
   margin-bottom: 10px;
   color: white;
   border-radius: 25px;
+  margin-left: 10%;
+  width: 80%;
+  position: absolute;
 }
 
-.heand {
-  background-color: rgba(245, 155, 152, 0.022);
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  border-radius: 25px;
-}
-
-.card {
+#container .card {
   margin: 5px;
   margin-top: 30px;
+  transition: all 1s;
 }
 
 .choosen-card {
@@ -46,22 +39,24 @@ img {
 }
 
 
-.buttons {
-  margin-top: 15px;
+#container .buttons {
+  margin-left: 40%;
+  margin-top: 50%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   border-radius: 25px;
+  width: 20%;
 }
 
 button {
+  width: 100%;
   appearance: none;
   background-color: #9e3417dc;
   border: 1px solid rgba(27, 31, 35, .15);
   border-radius: 6px;
   box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
   box-sizing: border-box;
-  color: #fff;
   cursor: pointer;
   display: inline-block;
   font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -78,3 +73,4 @@ button {
   vertical-align: middle;
   white-space: nowrap;
 }
+

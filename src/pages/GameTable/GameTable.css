@@ -1,0 +1,22 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  #container {
+    width: 100vw; 
+    background: pink;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0; /* vertical center */
+    left:0;right:0; /* horizontal center */
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+  }
+  #container div {
+    border: 2px solid black;
+    position: absolute;
+  }
+  #container .card {
+    background-color: blue;
+    transition: all 1s;
+  }
