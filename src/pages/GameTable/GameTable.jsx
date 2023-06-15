@@ -170,7 +170,7 @@ export default function GameTable() {
           <img
             src={
               snapshot.game.throwingDeck.some(
-                (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
+                (throwingDeckCard) => throwingDeckCard[0] === card[0] && throwingDeckCard[1] === card[1]
               )
                 ? getCardPicture(card[0], card[1])
                 : drawDeckCard

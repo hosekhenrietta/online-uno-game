@@ -62,7 +62,7 @@ export function newGame() {
     "red",8
   ];
 
-  state.game.throwingDeck.push(state.game.lastDiscardedCard)
+  state.game.throwingDeck.push(["red", 8, -1])
 }
 
 export function createdrawingDeck() {
