@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import user from "../../assets/user.png";
 import drawDeckCard from "../../assets/cards/draw.png";
 import "./GameTable.css";
-import { createGame, state } from "../../state/store";
+import { createGame, getCardPicture, state } from "../../state/store";
 import { useSnapshot } from "valtio";
 
 export default function GameTable() {
@@ -147,25 +147,37 @@ export default function GameTable() {
           style={{
             top: []
               .concat(...snapshot.game.players.map((player) => player.hand))
-              .some(
-                (handCard) =>
-                  handCard[0] === card[0] && handCard[1] === card[1] && handCard[2] === card[2]
-              )
+              .some((handCard) => JSON.stringify(handCard) === JSON.stringify(card))
               ? playerPositions[getPlayerIndexOfCard(card)].top + "%"
+              : snapshot.game.throwingDeck.some(
+                  (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
+                )
+              ? 40 + i / 100 + "%"
               : 40 + i / 100 + "%",
             left: []
               .concat(...snapshot.game.players.map((player) => player.hand))
-              .some(
-                (handCard) =>
-                  handCard[0] === card[0] && handCard[1] === card[1] && handCard[2] === card[2]
-              )
+              .some((handCard) => JSON.stringify(handCard) === JSON.stringify(card))
               ? playerPositions[getPlayerIndexOfCard(card)].left + "%"
+              : snapshot.game.throwingDeck.some(
+                  (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
+                )
+              ? 52 + i / 100 + "%"
               : 40 + i / 100 + "%",
             width: 8 + "%",
             height: 20 + "%",
           }}
         >
-          <img src={drawDeckCard} alt="card" style={{ width: "100%", height: "100%" }} />
+          <img
+            src={
+              snapshot.game.throwingDeck.some(
+                (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
+              )
+                ? getCardPicture(card[0], card[1])
+                : drawDeckCard
+            }
+            alt="card"
+            style={{ width: "100%", height: "100%" }}
+          />
         </div>
       ))}
     </div>

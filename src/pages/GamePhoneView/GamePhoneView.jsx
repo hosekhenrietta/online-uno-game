@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./GamePhoneView.css";
 import drawCard from "../../assets/cards/draw.png";
-import { drawFromDeck, nextPlayer, setPlayersHand, state } from "../../state/store";
+import { drawFromDeck, nextPlayer, setPlayersHand, state, setPlayerSelectedCard, discard, getCardPicture } from "../../state/store";
 import { useSnapshot } from "valtio";
 
-export default function GamePhoneView({ room, clientId, playerIndex }) {
+export default function GamePhoneView({ room, clientId }) {
   const snapshot = useSnapshot(state)
   
   const player = snapshot.game.players.find(player => player.clientId == clientId)
+  const playerIndex = snapshot.game.players.indexOf(player)
   const cardHandPositions = player.hand.map((card, index) => {
     return {
       id: index,
+      card: card,
       x: index * 50,
       y: 50,
       img: drawCard
@@ -20,18 +22,23 @@ export default function GamePhoneView({ room, clientId, playerIndex }) {
   const otherCardsPositions = snapshot.game.drawingDeck.map((card, index) => {
     return {
       id: index,
+      card: card,
       x: ((player.hand.length - 1) / 2) * 50,
       y: -100,
       img: drawCard
     }
   })
 
-  const cardPositions = cardHandPositions.concat(otherCardsPositions);
+  const cardPositions = cardHandPositions.concat(otherCardsPositions).map((card, index) => {
+    card.id = index
 
-  cardPositions.sort((a, b) => {
-    if (a.id < b.id) return -1;
-    return 1;
-  });
+    return card
+  })
+
+  // cardPositions.sort((a, b) => {
+  //   if (a.id < b.id) return -1;
+  //   return 1;
+  // });
 
   // Event handlers-
   const handleDraw = (e) => {
@@ -46,19 +53,17 @@ export default function GamePhoneView({ room, clientId, playerIndex }) {
   };
 
   const handleSelect = (cardId) => {
-    // const newCards = structuredClone(cards);
-    // console.log(newCards.selectedCard, cardId);
-    // if (newCards.selectedCard === cardId) {
-    //   // dobás
-    //   console.log("throw");
-    //   newCards.deck.push(cardId);
-    //   newCards.hand = newCards.hand.filter((c) => c !== cardId);
-    // } else {
-    //   // jelölés
-    //   newCards.selectedCard = cardId;
-    // }
-    // setCards(newCards);
+
+    console.log(snapshot.game.players[playerIndex].selectedCard, snapshot.game.players[playerIndex].hand[cardId]);
+    if(JSON.stringify(snapshot.game.players[playerIndex].selectedCard) === JSON.stringify(snapshot.game.players[playerIndex].hand[cardId])) {
+      console.log("Ez a selected", snapshot.game.players[playerIndex].selectedCard, snapshot.game.players[playerIndex].hand[cardId], playerIndex, cardId)
+      discard(playerIndex, cardId)
+    }
+    else
+      setPlayerSelectedCard(playerIndex, cardId)
   };
+
+  console.log(snapshot.game.players[playerIndex].selectedCard);
 
   return (
     <div id="container">
@@ -68,12 +73,12 @@ export default function GamePhoneView({ room, clientId, playerIndex }) {
          </h3>
       </div>
       
-        {cardPositions.map(({ id, text, x, y, img, index }) => (
+        {cardPositions.map(({ id, text, x, y, img, card, index }) => (
           <div
-            key={index}
+            key={id}
             className="card"
             style={{
-              top: `${y}%`,
+              top: !!snapshot.game.players[playerIndex].selectedCard && JSON.stringify(snapshot.game.players[playerIndex].selectedCard) === JSON.stringify(card) ? '40%' : `${y}%`,
               left: `${x}px`,
               width: "8%",
               height: "20%"
@@ -81,7 +86,7 @@ export default function GamePhoneView({ room, clientId, playerIndex }) {
             onClick={(e) => handleSelect(id)}
           >
             <img
-              src={img}
+              src={getCardPicture(card[0], card[1])}
               alt="card"
               style={{ width: "100%", height: "100%" }}
               onClick={(e) => handleSelect(id)}
