@@ -30,6 +30,26 @@ export default function GameTable() {
     height: 1 + "%",
   };
 
+  const playerPositions = [];
+  for (let i = 0; i < numberOfPlayers; i++) {
+    const playerPos = calcPlayerPosition(i);
+    playerPositions.push(playerPos);
+    // sin alfa = y / radius --> y = radius * sin 90 - alfa
+    // cos alfa = x / radius --> x = radius * cos 90 - alfa
+  }
+
+  function calcPlayerPosition(i) {
+    const alfa = i * deltaRotation;
+    const radius = 32.5;
+    const y = radius * Math.sin(degToRad(90 - alfa));
+    const x = radius * Math.cos(degToRad(90 - alfa));
+    const top = 50 - y - 7.5;
+    const left = 50 + x - 5;
+    const width = 10;
+    const height = 15;
+    return { top, left, width, height };
+  }
+
   let allCardPositions = snapshot.game.allCard.map((card, i) => { 
     return { 
       cardColor: card[0],
@@ -41,6 +61,7 @@ export default function GameTable() {
     } 
   })
 
+  console.log(snapshot.game.throwingDeck);
   for (let index = 0; index < snapshot.game.throwingDeck.length; index++) {
     allCardPositions = allCardPositions.map(card => {
       if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2])
@@ -48,8 +69,30 @@ export default function GameTable() {
 
       return card
       
-      })
+    })
   }
+
+  for (let index = 0; index < snapshot.game.players.length; index++) {
+    for (let i = 0; i < snapshot.game.players[index].hand.length; i++) {
+      allCardPositions = allCardPositions.map(card => {
+        if(card.cardColor === snapshot.game.players[index].hand[i][0] && card.cardValue === snapshot.game.players[index].hand[i][1] && card.key === snapshot.game.players[index].hand[i][2]) {
+          card.image = drawDeckCard
+          card.top = playerPositions[index].top + "%"
+          card.left = playerPositions[index].left + "%"
+        }
+    
+        return card
+          
+      })  
+    }
+  }
+    // allCardPositions = allCardPositions.map(card => {
+    //   if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2])
+    //     card.left = 52 + index / 100 + "%"
+
+    //   return card
+      
+    //   })
 
   // const cardHandPositions = player.hand.map((card, index) => {
   //   return {
@@ -71,26 +114,6 @@ export default function GameTable() {
   //    };
   // });
 
-  const playerPositions = [];
-  for (let i = 0; i < numberOfPlayers; i++) {
-    const playerPos = calcPlayerPosition(i);
-    playerPositions.push(playerPos);
-    // sin alfa = y / radius --> y = radius * sin 90 - alfa
-    // cos alfa = x / radius --> x = radius * cos 90 - alfa
-  }
-
-  function calcPlayerPosition(i) {
-    const alfa = i * deltaRotation;
-    const radius = 32.5;
-    const y = radius * Math.sin(degToRad(90 - alfa));
-    const x = radius * Math.cos(degToRad(90 - alfa));
-    const top = 50 - y - 7.5;
-    const left = 50 + x - 5;
-    const width = 10;
-    const height = 15;
-    return { top, left, width, height };
-  }
-
   function random(a, b) {
     return Math.floor(Math.random() * (b - a + 1)) + a;
   }
@@ -100,7 +123,7 @@ export default function GameTable() {
       state.game.players.find((player) =>
         player.hand.some(
           (handCard) =>
-            handCard[0] === card[0] && handCard[1] === card[1] && handCard[2] === card[2]
+            handCard[0] === card.cardColor && handCard[1] === card.cardValue && handCard[2] === card.key
         )
       )
     );
