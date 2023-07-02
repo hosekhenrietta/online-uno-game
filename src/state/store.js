@@ -58,11 +58,22 @@ export function newGame() {
 
   setPlayersHand();
 
-  state.game.lastDiscardedCard = state.game.drawingDeck.pop();
+  state.game.lastDiscardedCard = selectRandomCardWithNumber();
 
   state.game.throwingDeck.push(state.game.lastDiscardedCard)
 
   console.log("Ez van a dobópakli tetején: ", state.game.lastDiscardedCard);
+}
+
+function selectRandomCardWithNumber() {
+
+  let random = 0
+  do {
+    random = Math.floor(Math.random() * (state.game.drawingDeck.length - 1))
+    console.log(state.game.drawingDeck, random);
+  } while(state.game.drawingDeck[random][1] > 9)
+  
+  return state.game.drawingDeck.splice(random, 1)
 }
 
 export function createdrawingDeck() {
@@ -154,6 +165,7 @@ export function discard(playerID, cardIndex) {
     
     state.game.throwingDeck.push(state.game.players[playerID].hand[cardIndex])
     state.game.players[playerID].hand.splice(cardIndex, 1);
+    console.log(state.game.throwingDeck, state.game.players[playerID].hand);
   }
   console.log("ezek vannak a kezében dobás után: ");
   console.log(state.game.players[playerID].hand);
