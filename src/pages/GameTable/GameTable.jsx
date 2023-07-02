@@ -7,9 +7,6 @@ import { useSnapshot } from "valtio";
 
 export default function GameTable() {
   const snapshot = useSnapshot(state);
-  console.log(snapshot);
-
-  console.log(state);
   const numberOfPlayers = state.game.players.length;
   const deltaRotation = 360 / numberOfPlayers;
 
@@ -33,6 +30,27 @@ export default function GameTable() {
     height: 1 + "%",
   };
 
+  let allCardPositions = snapshot.game.allCard.map((card, i) => { 
+    return { 
+      cardColor: card[0],
+      cardValue: card[1],
+      key: card[2],
+      top: 40 + i / 100 + "%" , 
+      left:  40 + i / 100 + "%",
+      image: getCardPicture(card[0], card[1]) 
+    } 
+  })
+
+  for (let index = 0; index < snapshot.game.throwingDeck.length; index++) {
+    allCardPositions = allCardPositions.map(card => {
+      if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2])
+        card.left = 52 + index / 100 + "%"
+
+      return card
+      
+      })
+  }
+
   // const cardHandPositions = player.hand.map((card, index) => {
   //   return {
   //     id: index,
@@ -42,7 +60,6 @@ export default function GameTable() {
   //   }
   // })
 
-  console.log(snapshot.game.allCard);
   // const otherCardsPosition = cards.deck.map((cardId, i) => {
   //   const card = cards.cards[cardId];
   //   return {
@@ -77,8 +94,6 @@ export default function GameTable() {
   function random(a, b) {
     return Math.floor(Math.random() * (b - a + 1)) + a;
   }
-
-  console.log(snapshot.game.players[0].hand);
 
   const getPlayerIndexOfCard = (card) =>
     state.game.players.indexOf(
@@ -140,41 +155,37 @@ export default function GameTable() {
           </div>
         </div>
       ))}
-      {snapshot.game.allCard.map((card, i) => (
+      {allCardPositions.map((card, i) => (
         <div
           key={i}
           className="card"
           style={{
-            top: []
-              .concat(...snapshot.game.players.map((player) => player.hand))
-              .some((handCard) => JSON.stringify(handCard) === JSON.stringify(card))
-              ? playerPositions[getPlayerIndexOfCard(card)].top + "%"
-              : snapshot.game.throwingDeck.some(
-                  (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
-                )
-              ? 40 + i / 100 + "%"
-              : 40 + i / 100 + "%",
-            left: []
-              .concat(...snapshot.game.players.map((player) => player.hand))
-              .some((handCard) => JSON.stringify(handCard) === JSON.stringify(card))
-              ? playerPositions[getPlayerIndexOfCard(card)].left + "%"
-              : snapshot.game.throwingDeck.some(
-                  (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
-                )
-              ? 52 + i / 100 + "%"
-              : 40 + i / 100 + "%",
+            top: card.top,
+            left: card.left,
+            // top: []
+            //   .concat(...snapshot.game.players.map((player) => player.hand))
+            //   .some((handCard) => JSON.stringify(handCard) === JSON.stringify(card))
+            //   ? playerPositions[getPlayerIndexOfCard(card)].top + "%"
+            //   : snapshot.game.throwingDeck.some(
+            //       (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
+            //     )
+            //   ? 40 + i / 100 + "%"
+            //   : 40 + i / 100 + "%",
+            // left: []
+            //   .concat(...snapshot.game.players.map((player) => player.hand))
+            //   .some((handCard) => JSON.stringify(handCard) === JSON.stringify(card))
+            //   ? playerPositions[getPlayerIndexOfCard(card)].left + "%"
+            //   : snapshot.game.throwingDeck.some(
+            //       (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card)
+            //     )
+            //   ? 52 + i / 100 + "%"
+            //   : 40 + i / 100 + "%",
             width: 8 + "%",
             height: 20 + "%",
           }}
         >
           <img
-            src={
-              snapshot.game.throwingDeck.some(
-                (throwingDeckCard) => JSON.stringify(throwingDeckCard) === JSON.stringify(card) || (throwingDeckCard[2] === -1)
-              )
-                ? getCardPicture(card[0], card[1])
-                : drawDeckCard
-            }
+            src={card.image}
             alt="card"
             style={{ width: "100%", height: "100%" }}
           />

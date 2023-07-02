@@ -58,11 +58,11 @@ export function newGame() {
 
   setPlayersHand();
 
-  state.game.lastDiscardedCard = [
-    "red",8
-  ];
+  state.game.lastDiscardedCard = state.game.drawingDeck.pop();
 
-  state.game.throwingDeck.push(["red", 8, -1])
+  state.game.throwingDeck.push(state.game.lastDiscardedCard)
+
+  console.log("Ez van a dobópakli tetején: ", state.game.lastDiscardedCard);
 }
 
 export function createdrawingDeck() {
