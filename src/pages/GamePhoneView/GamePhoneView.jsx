@@ -89,7 +89,6 @@ export default function GamePhoneView({ room, clientId }) {
               src={getCardPicture(card[0], card[1])}
               alt="card"
               style={{ width: "100%", height: "100%" }}
-              onClick={(e) => handleSelect(id)}
             />
           </div>
         ))}
