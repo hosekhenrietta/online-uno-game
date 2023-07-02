@@ -180,7 +180,7 @@ export default function GameTable() {
       ))}
       {allCardPositions.map((card, i) => (
         <div
-          key={i}
+          key={card.key}
           className="card"
           style={{
             top: card.top,
