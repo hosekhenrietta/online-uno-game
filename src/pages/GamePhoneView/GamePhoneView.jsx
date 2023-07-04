@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./GamePhoneView.css";
 import drawCard from "../../assets/cards/draw.png";
-import { drawFromDeck, nextPlayer, setPlayersHand, state, setPlayerSelectedCard, discard, getCardPicture } from "../../state/store";
+import { drawFromDeck, nextPlayer, setPlayersHand, state, setPlayerSelectedCard, discard, getCardPicture, canDiscard } from "../../state/store";
 import { useSnapshot } from "valtio";
 
 export default function GamePhoneView({ room, clientId }) {
@@ -59,8 +59,10 @@ export default function GamePhoneView({ room, clientId }) {
       console.log("Ez a selected", snapshot.game.players[playerIndex].selectedCard, snapshot.game.players[playerIndex].hand[cardId], playerIndex, cardId)
       discard(playerIndex, cardId)
     }
-    else
-      setPlayerSelectedCard(playerIndex, cardId)
+    else {
+      if(canDiscard(snapshot.game.players[playerIndex].hand[cardId][0], snapshot.game.players[playerIndex].hand[cardId][1]))
+        setPlayerSelectedCard(playerIndex, cardId)
+    }
   };
 
   console.log(snapshot.game.players[playerIndex].selectedCard);
@@ -81,7 +83,9 @@ export default function GamePhoneView({ room, clientId }) {
               top: !!snapshot.game.players[playerIndex].selectedCard && JSON.stringify(snapshot.game.players[playerIndex].selectedCard) === JSON.stringify(card) ? '40%' : `${y}%`,
               left: `${x}px`,
               width: "8%",
-              height: "20%"
+              height: "20%",
+              filter: blur('10px'),
+              opacity: canDiscard(card[0], card[1]) ? 1 : 0.6,
             }}
             onClick={(e) => handleSelect(id)}
           >

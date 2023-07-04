@@ -57,15 +57,19 @@ export default function GameTable() {
       key: card[2],
       top: 40 + i / 100 + "%" , 
       left:  40 + i / 100 + "%",
-      image: getCardPicture(card[0], card[1]) 
+      image: drawDeckCard 
     } 
   })
 
-  console.log(snapshot.game.throwingDeck);
+  console.log('player#0 keze: ', JSON.stringify(state.game.players[0].hand));
+  console.log('player#1 keze: ', JSON.stringify(state.game.players[1].hand));
+  console.log('Snapshot throwingDeck: ', JSON.stringify(snapshot.game.throwingDeck));
   for (let index = 0; index < snapshot.game.throwingDeck.length; index++) {
     allCardPositions = allCardPositions.map(card => {
-      if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2])
+      if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2]) {
         card.left = 52 + index / 100 + "%"
+        card.image = getCardPicture(card.cardColor, card.cardValue)
+      }
 
       return card
       

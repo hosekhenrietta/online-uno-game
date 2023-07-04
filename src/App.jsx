@@ -5,7 +5,7 @@ import "./App.css";
 import GameTable from "./pages/GameTable/GameTable";
 
 import { useSnapshot } from "valtio"; //proxy
-import * as Y from "yjs";
+import { Doc } from "yjs";
 import { bind } from "valtio-yjs";
 import { WebsocketProvider } from "y-websocket";
 import { state, addClient, initStore, newGame, createGame } from "./state/store";
@@ -30,7 +30,7 @@ const waitForSync = (websocketProvider) =>
   });
 const createSyncedStore = async (room, state) => {
   try {
-    const ydoc = new Y.Doc();
+    const ydoc = new Doc();
     const websocketProvider = new WebsocketProvider("ws://localhost:1234", room, ydoc);
     await waitForSync(websocketProvider);
     const yStore = ydoc.getMap("store");
