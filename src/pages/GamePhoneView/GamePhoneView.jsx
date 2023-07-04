@@ -74,7 +74,7 @@ export default function GamePhoneView({ room, clientId }) {
            Choose a card and swipe up OR draw a card by pushing the button!
          </h3>
       </div>
-      
+        <p style={{ color: 'white', position: 'relative', top: '20%' }}>{ JSON.stringify(snapshot.game.throwingDeck) }</p>
         {cardPositions.map(({ id, text, x, y, img, card, index }) => (
           <div
             key={id}

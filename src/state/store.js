@@ -151,8 +151,6 @@ export function discard(playerID, cardIndex) {
       state.game.players[playerID].hand[cardIndex][1]
     )
   ) {
-    state.game.throwingDeck.push(state.game.players[playerID].hand[cardIndex])
-    console.log("Dobó pakli erre frissült: ", JSON.stringify(state.game.throwingDeck));
 
     state.game.players[playerID].selectedCard = null
     state.game.lastDiscardedCard = [
@@ -166,7 +164,12 @@ export function discard(playerID, cardIndex) {
         state.game.players[playerID].hand[cardIndex][1]
     );
     
-    state.game.players[playerID].hand.splice(cardIndex, 1);
+    //const deletedCard = state.game.players[playerID].hand.splice(cardIndex, 1)[0];
+    //console.log("Ez lett törölve: ", deletedCard);
+    const deletedCard = state.game.players[playerID].hand[cardIndex]
+    state.game.throwingDeck.push(deletedCard)
+    state.game.players[playerID].hand = state.game.players[playerID].hand.filter((card, index) => cardIndex !== index)
+    console.log("Dobó pakli erre frissült: ", JSON.stringify(state.game.throwingDeck));
   }
   console.log("ezek vannak a kezében dobás után: ");
   console.log(JSON.stringify(state.game.players[playerID].hand));
@@ -177,7 +180,7 @@ export function canDiscard(cardcolor, cardnumber) {
   state.game.lastDiscardedCard.length == 0, 
   state.game.lastDiscardedCard[0] == cardcolor,
   state.game.lastDiscardedCard[1] == cardnumber);
-  
+
   return (
     state.game.lastDiscardedCard.length == 0 ||
     state.game.lastDiscardedCard[0] == cardcolor ||

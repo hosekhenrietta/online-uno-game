@@ -69,6 +69,7 @@ export default function GameTable() {
       if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2]) {
         card.left = 52 + index / 100 + "%"
         card.image = getCardPicture(card.cardColor, card.cardValue)
+        console.log(JSON.stringify(card));
       }
 
       return card
@@ -134,6 +135,7 @@ export default function GameTable() {
 
   return (
     <div id="container">
+      <p style={{ color: 'white', position: 'relative', top: '20%' }}>{ JSON.stringify(snapshot.game.throwingDeck) }</p>
       <div
         style={{
           top: drawingDeck.top,
