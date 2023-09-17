@@ -52,23 +52,25 @@ export default function GameTable() {
 
   let allCardPositions = snapshot.game.allCard.map((card, i) => { 
     return { 
-      cardColor: card[0],
-      cardValue: card[1],
-      key: card[2],
+      color: card.color,
+      value: card.value,
+      key: card.key,
       top: 40 + i / 100 + "%" , 
       left:  40 + i / 100 + "%",
-      image: drawDeckCard 
+      image: drawDeckCard,
+      zIndex: snapshot.game.allCard.length 
     } 
   })
 
   console.log('player#0 keze: ', JSON.stringify(state.game.players[0].hand));
   console.log('player#1 keze: ', JSON.stringify(state.game.players[1].hand));
   console.log('Snapshot throwingDeck: ', JSON.stringify(snapshot.game.throwingDeck));
-  for (let index = 0; index < snapshot.game.throwingDeck.length; index++) {
+  for (const [index, throwingDeckCard] of snapshot.game.throwingDeck.entries()) {
     allCardPositions = allCardPositions.map(card => {
-      if(card.cardColor === snapshot.game.throwingDeck[index][0] && card.cardValue === snapshot.game.throwingDeck[index][1] && card.key === snapshot.game.throwingDeck[index][2]) {
+      if(card.color === throwingDeckCard.color && card.value === throwingDeckCard.value && card.key === throwingDeckCard.key) {
         card.left = 52 + index / 100 + "%"
-        card.image = getCardPicture(card.cardColor, card.cardValue)
+        card.image = getCardPicture(card.color, card.value)
+        card.zIndex = index
         console.log(JSON.stringify(card));
       }
 
@@ -80,7 +82,7 @@ export default function GameTable() {
   for (let index = 0; index < snapshot.game.players.length; index++) {
     for (let i = 0; i < snapshot.game.players[index].hand.length; i++) {
       allCardPositions = allCardPositions.map(card => {
-        if(card.cardColor === snapshot.game.players[index].hand[i][0] && card.cardValue === snapshot.game.players[index].hand[i][1] && card.key === snapshot.game.players[index].hand[i][2]) {
+        if(card.color === snapshot.game.players[index].hand[i].color && card.value === snapshot.game.players[index].hand[i].value && card.key === snapshot.game.players[index].hand[i].key) {
           card.image = drawDeckCard
           card.top = playerPositions[index].top + "%"
           card.left = playerPositions[index].left + "%"
@@ -184,7 +186,7 @@ export default function GameTable() {
           </div>
         </div>
       ))}
-      {allCardPositions.map((card, i) => (
+      {allCardPositions.map((card, index) => (
         <div
           key={card.key}
           className="card"
@@ -211,6 +213,7 @@ export default function GameTable() {
             //   : 40 + i / 100 + "%",
             width: 8 + "%",
             height: 20 + "%",
+            zIndex: card.zIndex
           }}
         >
           <img

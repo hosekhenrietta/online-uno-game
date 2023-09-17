@@ -15,7 +15,7 @@ export function initStore() {
       // 10-kimarad, 11-sorrendváltozás, 12-+2
       //black: 13-sima. 14-+4
       plus2counter: 0,
-      allCard: []
+      allCard: [],
     },
     synced: false,
     clients: [], // clientID, nickname
@@ -30,7 +30,12 @@ export function addPlayers() {
   for (let index = 1; index < length_; index++) {
     // console.log("itt vagyok a forban: " + index);
     console.log(state.clients[index].id);
-    state.game.players.push({ id: index, clientId: state.clients[index].id, hand: [], selectedCard: null });
+    state.game.players.push({
+      id: index,
+      clientId: state.clients[index].id,
+      hand: [],
+      selectedCard: null,
+    });
   }
 
   state.game.currentPlayerID = 1;
@@ -50,7 +55,7 @@ export function createGame() {
 
 export function newGame() {
   state.game.currentStateID = 0;
-  state.game.throwingDeck = []
+  state.game.throwingDeck = [];
 
   console.log("Új játék kezdődik");
 
@@ -58,41 +63,43 @@ export function newGame() {
 
   setPlayersHand();
 
-  state.game.lastDiscardedCard = state.game.drawingDeck.pop() //selectRandomCardWithNumber();
+  state.game.lastDiscardedCard = state.game.drawingDeck.pop(); //selectRandomCardWithNumber();
 
-  state.game.throwingDeck.push(state.game.lastDiscardedCard)
+  state.game.throwingDeck.push(state.game.lastDiscardedCard);
 
   console.log("Ez van a dobópakli tetején: ", state.game.lastDiscardedCard);
 }
 
 function selectRandomCardWithNumber() {
-
-  let random = 0
+  let random = 0;
   do {
-    random = Math.floor(Math.random() * (state.game.drawingDeck.length - 1))
+    random = Math.floor(Math.random() * (state.game.drawingDeck.length - 1));
     console.log(state.game.drawingDeck, random);
-  } while(state.game.drawingDeck[random][1] > 9)
-  
-  return state.game.drawingDeck.splice(random, 1)
+  } while (state.game.drawingDeck[random][1] > 9);
+
+  return state.game.drawingDeck.splice(random, 1);
 }
 
 export function createdrawingDeck() {
   let key = 0;
+  const numberedColors = ['red', 'blue', 'green', 'yellow']
   for (let db = 0; db < 3; db++) {
-    for (let id = 1; id <= 12; id++) {
-      state.game.drawingDeck.push(["red", id, key]);
-      key++;
-      state.game.drawingDeck.push(["blue", id, key]);
-      key++;
-      state.game.drawingDeck.push(["green", id, key]);
-      key++;
-      state.game.drawingDeck.push(["yellow", id, key]);
-      key++;
+    for (let value = 1; value <= 12; value++) {
+      for (const numberedColor of numberedColors) {
+        state.game.drawingDeck.push({
+          key: key++,
+          color: numberedColor,
+          value: value,
+        });  
+      }
     }
 
-    for (let id = 13; id <= 14; id++) {
-      state.game.drawingDeck.push(["black", id, key]);
-      key++;
+    for (let value = 13; value <= 14; value++) {
+      state.game.drawingDeck.push(state.game.drawingDeck.push({
+        key: key++,
+        color: "black",
+        value: value,
+      }));
     }
   }
 
@@ -101,7 +108,7 @@ export function createdrawingDeck() {
   state.game.drawingDeck.sort(() => Math.random() - 0.5);
   console.log("Húzópakli összekeverve:");
   console.log(state.game.drawingDeck);
-  state.game.allCard = [...state.game.drawingDeck]
+  state.game.allCard = [...state.game.drawingDeck];
 }
 
 export function setPlayersHand() {
@@ -117,7 +124,7 @@ export function setPlayersHand() {
 }
 
 export function drawFromDeck(num, playerID) {
-  var length = state.game.drawingDeck.length;
+  const length = state.game.drawingDeck.length;
 
   if (length < num) {
     console.log("kevés volt a kártya, így újra kell keverni");
@@ -147,28 +154,24 @@ export function discard(playerID, cardIndex) {
 
   if (
     canDiscard(
-      state.game.players[playerID].hand[cardIndex][0],
-      state.game.players[playerID].hand[cardIndex][1]
+      state.game.players[playerID].hand[cardIndex].color,
+      state.game.players[playerID].hand[cardIndex].value
     )
   ) {
+    state.game.players[playerID].selectedCard = null;
+    state.game.lastDiscardedCard = state.game.players[playerID].hand[cardIndex]
 
-    state.game.players[playerID].selectedCard = null
-    state.game.lastDiscardedCard = [
-      state.game.players[playerID].hand[cardIndex][0],
-      state.game.players[playerID].hand[cardIndex][1],
-    ];
     console.log(
-      "Kártya eldobva: " +
-        state.game.players[playerID].hand[cardIndex][0] +
-        " " +
-        state.game.players[playerID].hand[cardIndex][1]
+      "Kártya eldobva: ", JSON.stringify(state.game.players[playerID].hand[cardIndex])
     );
-    
+
     //const deletedCard = state.game.players[playerID].hand.splice(cardIndex, 1)[0];
     //console.log("Ez lett törölve: ", deletedCard);
-    const deletedCard = state.game.players[playerID].hand[cardIndex]
-    state.game.throwingDeck.push(deletedCard)
-    state.game.players[playerID].hand = state.game.players[playerID].hand.filter((card, index) => cardIndex !== index)
+    const deletedCard = state.game.players[playerID].hand[cardIndex];
+    state.game.throwingDeck.push(deletedCard);
+    state.game.players[playerID].hand = state.game.players[playerID].hand.filter(
+      (card, index) => cardIndex !== index
+    );
     console.log("Dobó pakli erre frissült: ", JSON.stringify(state.game.throwingDeck));
   }
   console.log("ezek vannak a kezében dobás után: ");
@@ -176,20 +179,23 @@ export function discard(playerID, cardIndex) {
 }
 
 export function canDiscard(cardcolor, cardnumber) {
-  console.log("Megnézzük, hogy a kiválasztott kártya letehető-e", 
-  state.game.lastDiscardedCard.length == 0, 
-  state.game.lastDiscardedCard[0] == cardcolor,
-  state.game.lastDiscardedCard[1] == cardnumber);
+  console.log(
+    "Megnézzük, hogy a kiválasztott kártya letehető-e",
+    state.game.lastDiscardedCard.length == 0,
+    state.game.lastDiscardedCard.color == cardcolor,
+    state.game.lastDiscardedCard.value == cardnumber,
+    state.game.lastDiscardedCard
+  );
 
   return (
     state.game.lastDiscardedCard.length == 0 ||
-    state.game.lastDiscardedCard[0] == cardcolor ||
-    state.game.lastDiscardedCard[1] == cardnumber
+    state.game.lastDiscardedCard.color == cardcolor ||
+    state.game.lastDiscardedCard.value == cardnumber
   );
 }
 
 export function setPlayerSelectedCard(playerID, cardIndex) {
-  state.game.players[playerID].selectedCard = state.game.players[playerID].hand[cardIndex]
+  state.game.players[playerID].selectedCard = state.game.players[playerID].hand[cardIndex];
 }
 
 export function addClient(clientId) {

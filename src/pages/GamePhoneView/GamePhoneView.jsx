@@ -60,7 +60,7 @@ export default function GamePhoneView({ room, clientId }) {
       discard(playerIndex, cardId)
     }
     else {
-      if(canDiscard(snapshot.game.players[playerIndex].hand[cardId][0], snapshot.game.players[playerIndex].hand[cardId][1]))
+      if(canDiscard(snapshot.game.players[playerIndex].hand[cardId].color, snapshot.game.players[playerIndex].hand[cardId].value))
         setPlayerSelectedCard(playerIndex, cardId)
     }
   };
@@ -77,7 +77,7 @@ export default function GamePhoneView({ room, clientId }) {
         <p style={{ color: 'white', position: 'relative', top: '20%' }}>{ JSON.stringify(snapshot.game.throwingDeck) }</p>
         {cardPositions.map(({ id, text, x, y, img, card, index }) => (
           <div
-            key={id}
+            key={card.key}
             className="card"
             style={{
               top: !!snapshot.game.players[playerIndex].selectedCard && JSON.stringify(snapshot.game.players[playerIndex].selectedCard) === JSON.stringify(card) ? '40%' : `${y}%`,
@@ -85,12 +85,12 @@ export default function GamePhoneView({ room, clientId }) {
               width: "8%",
               height: "20%",
               filter: blur('10px'),
-              opacity: canDiscard(card[0], card[1]) ? 1 : 0.6,
+              opacity: canDiscard(card.color, card.value) ? 1 : 0.6,
             }}
             onClick={(e) => handleSelect(id)}
           >
             <img
-              src={getCardPicture(card[0], card[1])}
+              src={getCardPicture(card.color, card.value)}
               alt="card"
               style={{ width: "100%", height: "100%" }}
             />
