@@ -85,7 +85,7 @@ export default function GameTable() {
         if(card.color === snapshot.game.players[index].hand[i].color && card.value === snapshot.game.players[index].hand[i].value && card.key === snapshot.game.players[index].hand[i].key) {
           card.image = drawDeckCard
           card.top = playerPositions[index].top + "%"
-          card.left = playerPositions[index].left + "%"
+          card.left = playerPositions[index].left + i + "%"
         }
     
         return card
