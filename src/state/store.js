@@ -16,6 +16,7 @@ export function initStore() {
       //black: 13-sima. 14-+4
       plus2counter: 0,
       allCard: [],
+      direction: false,
     },
     synced: false,
     clients: [], // clientID, nickname
@@ -31,6 +32,7 @@ export function addPlayers() {
     // console.log("itt vagyok a forban: " + index);
     console.log(state.clients[index].id);
     state.game.players.push({
+      name: state.clients[index].nickname,
       id: index,
       clientId: state.clients[index].id,
       hand: [],
@@ -149,7 +151,7 @@ export function drawFromDeck(num, playerID) {
 
 export function discard(playerID, cardIndex) {
   console.log(playerID, cardIndex);
-  console.log("ezek vannak a kezében mielőtt eldobja: ");
+  console.log("Ezek vannak a kezében mielőtt eldobja: ");
   console.log(state.game.players[playerID].hand);
 
   if (
@@ -174,8 +176,10 @@ export function discard(playerID, cardIndex) {
     );
     console.log("Dobó pakli erre frissült: ", JSON.stringify(state.game.throwingDeck));
   }
-  console.log("ezek vannak a kezében dobás után: ");
+  console.log("Ezek vannak a kezében dobás után: ");
   console.log(JSON.stringify(state.game.players[playerID].hand));
+  
+  nextPlayer();
 }
 
 export function canDiscard(cardcolor, cardnumber) {
