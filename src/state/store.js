@@ -15,7 +15,8 @@ export function initStore() {
       // 10-kimarad, 11-sorrendváltozás, 12-+2
       //black: 13-sima. 14-+4
       plus2counter: 0,
-      allCard: []
+      allCard: [],
+      direction: false,
     },
     synced: false,
     clients: [], // clientID, nickname,
@@ -26,25 +27,25 @@ export function initStore() {
       latePlayersCanJoin: false,
       bannedPlayersList: [],
       timeOutPlayersList: [],
-      kickedPlayersList: []
+      kickedPlayersList: [],
     },
   });
 }
 
 export function removeClient(clientId) {
-  state.clients = state.clients.filter(client => client.id !== clientId)
+  state.clients = state.clients.filter((client) => client.id !== clientId);
 }
 
 export function setLatePlayersCanJoin(value) {
-  state.settings.latePlayersCanJoin = value
+  state.settings.latePlayersCanJoin = value;
 }
 
 export function setUseRoundTimeLimit(value) {
-  state.settings.useRoundTimeLimit = value
+  state.settings.useRoundTimeLimit = value;
 }
 
 export function setRoundTimeLimit(value) {
-  state.settings.roundTimeLimit = value
+  state.settings.roundTimeLimit = value;
 }
 
 export function addPlayers() {
@@ -56,6 +57,7 @@ export function addPlayers() {
     // console.log("itt vagyok a forban: " + index);
     console.log(state.clients[index].id);
     state.game.players.push({
+      name: state.clients[index].nickname,
       id: index,
       clientId: state.clients[index].id,
       hand: [],
@@ -82,14 +84,13 @@ export function addLatePlayer(clientId) {
     selectedCard: null,
   });
 
-  drawFromDeck(8, state.game.players.length - 1)
-
+  drawFromDeck(8, state.game.players.length - 1);
 }
 
 export function deletePlayer(clientId) {
-  state.clients = state.clients.filter(client => client.id !== clientId)
+  state.clients = state.clients.filter((client) => client.id !== clientId);
   //state.game.drawingDeck.concat(state.game.players.find(player => player.clientId === clientId).hand)
-  state.game.players = state.game.players.filter(player => player.clientId !== clientId)
+  state.game.players = state.game.players.filter((player) => player.clientId !== clientId);
 }
 
 export function createGame() {
@@ -127,7 +128,7 @@ function selectRandomCardWithNumber() {
 
 export function createdrawingDeck() {
   let key = 0;
-  const numberedColors = ['red', 'blue', 'green', 'yellow']
+  const numberedColors = ["red", "blue", "green", "yellow"];
   for (let db = 0; db < 3; db++) {
     for (let value = 1; value <= 12; value++) {
       for (const numberedColor of numberedColors) {
@@ -135,16 +136,18 @@ export function createdrawingDeck() {
           key: key++,
           color: numberedColor,
           value: value,
-        });  
+        });
       }
     }
 
     for (let value = 13; value <= 14; value++) {
-      state.game.drawingDeck.push(state.game.drawingDeck.push({
-        key: key++,
-        color: "black",
-        value: value,
-      }));
+      state.game.drawingDeck.push(
+        state.game.drawingDeck.push({
+          key: key++,
+          color: "black",
+          value: value,
+        })
+      );
     }
   }
 
@@ -190,12 +193,11 @@ export function drawFromDeck(num, playerID) {
     }
     console.log(playerID + ". játékos húzott " + num + " lapot");
   }
-
 }
 
 export function discard(playerID, cardIndex) {
   console.log(playerID, cardIndex);
-  console.log("ezek vannak a kezében mielőtt eldobja: ");
+  console.log("Ezek vannak a kezében mielőtt eldobja: ");
   console.log(state.game.players[playerID].hand);
 
   if (
@@ -205,11 +207,9 @@ export function discard(playerID, cardIndex) {
     )
   ) {
     state.game.players[playerID].selectedCard = null;
-    state.game.lastDiscardedCard = state.game.players[playerID].hand[cardIndex]
+    state.game.lastDiscardedCard = state.game.players[playerID].hand[cardIndex];
 
-    console.log(
-      "Kártya eldobva: ", JSON.stringify(state.game.players[playerID].hand[cardIndex])
-    );
+    console.log("Kártya eldobva: ", JSON.stringify(state.game.players[playerID].hand[cardIndex]));
 
     //const deletedCard = state.game.players[playerID].hand.splice(cardIndex, 1)[0];
     //console.log("Ez lett törölve: ", deletedCard);
@@ -220,9 +220,10 @@ export function discard(playerID, cardIndex) {
     );
     console.log("Dobó pakli erre frissült: ", JSON.stringify(state.game.throwingDeck));
   }
-  console.log("ezek vannak a kezében dobás után: ");
+  console.log("Ezek vannak a kezében dobás után: ");
   console.log(JSON.stringify(state.game.players[playerID].hand));
-  
+
+  nextPlayer();
 }
 
 export function canDiscard(cardcolor, cardnumber) {
