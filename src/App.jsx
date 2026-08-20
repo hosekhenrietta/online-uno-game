@@ -4,11 +4,11 @@ import "./App.css";
 //import Animations from './pages/Animations/Animations';
 import GameTable from "./pages/GameTable/GameTable";
 
-import { useSnapshot } from "valtio"; //proxy
+import { snapshot, useSnapshot } from "valtio"; //proxy
 import { Doc } from "yjs";
 import { bind } from "valtio-yjs";
 import { WebsocketProvider } from "y-websocket";
-import { state, addClient, initStore, newGame, createGame } from "./state/store";
+import { state, addClient, initStore, newGame, createGame, setLatePlayersCanJoin, addLatePlayer, removeClient } from "./state/store";
 import { RoomMaker } from "./pages/RoomMaker/RoomMaker";
 //import { WaitingRoomOnPhone } from './pages/WaitingRoom/WaitingRoomOnPhone';
 
@@ -17,6 +17,7 @@ import { WaitingRoomOnPhone } from "./pages/WaitingRoom/WaitingRoomOnPhone";
 import { JoinRoomOnPhone } from "./pages/RoomMaker/JoinRoomOnPhone";
 import { Rotate } from "./pages/WarningPages/Rotate";
 import GamePhoneView from "./pages/GamePhoneView/GamePhoneView";
+import GameAlreadyStarted from "./pages/WarningPages/GameAlreadyStarted";
 
 const waitForSync = (websocketProvider) =>
   new Promise((resolve, reject) => {
@@ -55,8 +56,8 @@ function App() {
 
   const snap = useSnapshot(state);
   const synced = snap.synced;
-
   const isEmptySnapshot = Object.keys(snap).length === 0;
+  
   const handleCreate = async () => {
     let result = await createSyncedStore(room, state);
     console.log(result);
@@ -79,12 +80,22 @@ function App() {
   const handleJoin = async () => {
     let result = await createSyncedStore(room, state);
     const clientId = result.clientId;
-    if (state.clients !== undefined) {
+    if (state.clients !== undefined && state.game.currentStateID !== 0) {
+      console.log("Nem indult el");
       setClientId(clientId);
       setRoomISCreated(true);
       addClient(clientId);
-    } else {
+    } else if(state.clients === undefined) {
       alert("This room is not created yet! If you click on CREATE NEW ROOM you will create it.");
+    } else if(state.game.currentStateID == 0) { 
+      if(!state.settings.latePlayersCanJoin) {
+        setRoomISCreated(true)
+      }
+      else {
+        addLatePlayer(clientId)
+        setClientId(clientId);
+        setRoomISCreated(true);
+      }
     }
   };
 
@@ -93,6 +104,16 @@ function App() {
       addClient(clientId);
     }
   }, [synced, clientId]);
+
+  useEffect(() => {
+    return () => {
+      console.log("kilépés", snap, !isEmptySnapshot);
+      if (!isEmptySnapshot) {
+        removeClient(clientId)
+        console.log(snap.clients);
+      }
+    };
+  }, []);
 
   const handleSetRoomEvent = (e) => {
     setRoom(e);
@@ -165,11 +186,13 @@ function App() {
             setNicknameEvent={handlesetNicknameEvent}
             setNameIsCreatedEvent={handlesetNameIsCreatedEvent}
           />
+        ) : snap.game.currentStateID === 0 && !snap.clients.map(client => client.id).includes(clientId) ? (
+          <GameAlreadyStarted />
         ) : (
           <GamePhoneView room={room} clientId={clientId} />
-        ) // Itt a OnPhone verzio kellene
-      ) : // laptopon
-      !roomIsCreated ? (
+        )
+        // Itt a OnPhone verzio kellene // laptopon
+      ) : !roomIsCreated ? (
         <RoomMaker
           room={room}
           createRoomEvent={handleCreate}

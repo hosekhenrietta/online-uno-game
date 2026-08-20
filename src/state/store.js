@@ -6,20 +6,45 @@ export function initStore() {
   Object.assign(state, {
     game: {
       numberOfPlayers: -1,
-      currentPlayerID: -1,
+      currentPlayerIndex: -1,
       currentStateID: -1, // -1 - nem kezdodott 0- betolt,kártyakezekben 1-játékos akcióthajt végre
-      players: [], //name, id, hand [], selectedCard
+      players: [], //name, id, hand [], selectedCard, afkCounter: 0
       drawingDeck: [],
       lastDiscardedCard: [],
       throwingDeck: [],
       // 10-kimarad, 11-sorrendváltozás, 12-+2
       //black: 13-sima. 14-+4
       plus2counter: 0,
-      allCard: [],
+      allCard: []
     },
     synced: false,
-    clients: [], // clientID, nickname
+    clients: [], // clientID, nickname,
+    settings: {
+      roundTimeLimit: 60,
+      useRoundTimeLimit: true,
+      automaticKickAfterRoundNumber: 3,
+      latePlayersCanJoin: false,
+      bannedPlayersList: [],
+      timeOutPlayersList: [],
+      kickedPlayersList: []
+    },
   });
+}
+
+export function removeClient(clientId) {
+  state.clients = state.clients.filter(client => client.id !== clientId)
+}
+
+export function setLatePlayersCanJoin(value) {
+  state.settings.latePlayersCanJoin = value
+}
+
+export function setUseRoundTimeLimit(value) {
+  state.settings.useRoundTimeLimit = value
+}
+
+export function setRoundTimeLimit(value) {
+  state.settings.roundTimeLimit = value
 }
 
 export function addPlayers() {
@@ -38,13 +63,33 @@ export function addPlayers() {
     });
   }
 
-  state.game.currentPlayerID = 1;
+  state.game.currentPlayerIndex = 1;
   console.log("Player hossz: " + state.game.players.length);
   console.log("Jatekosok hozzáadva: ");
   state.game.players.forEach((element) => {
     console.log(element);
   });
-  console.log("Jelenlegi játékos id: " + state.game.currentPlayerID);
+  console.log("Jelenlegi játékos id: " + state.game.currentPlayerIndex);
+}
+
+export function addLatePlayer(clientId) {
+  addClient(clientId);
+
+  state.game.players.push({
+    id: state.clients.length - 1,
+    clientId: state.clients[state.clients.length - 1].id,
+    hand: [],
+    selectedCard: null,
+  });
+
+  drawFromDeck(8, state.game.players.length - 1)
+
+}
+
+export function deletePlayer(clientId) {
+  state.clients = state.clients.filter(client => client.id !== clientId)
+  //state.game.drawingDeck.concat(state.game.players.find(player => player.clientId === clientId).hand)
+  state.game.players = state.game.players.filter(player => player.clientId !== clientId)
 }
 
 export function createGame() {
@@ -145,6 +190,7 @@ export function drawFromDeck(num, playerID) {
     }
     console.log(playerID + ". játékos húzott " + num + " lapot");
   }
+
 }
 
 export function discard(playerID, cardIndex) {
@@ -176,6 +222,7 @@ export function discard(playerID, cardIndex) {
   }
   console.log("ezek vannak a kezében dobás után: ");
   console.log(JSON.stringify(state.game.players[playerID].hand));
+  
 }
 
 export function canDiscard(cardcolor, cardnumber) {
@@ -203,15 +250,15 @@ export function addClient(clientId) {
 }
 
 export function nextPlayer() {
-  var size = state.game.players.length;
-  console.log("eddig a currentplyer: " + state.game.currentPlayerID);
+  let size = state.game.players.length;
+  console.log("eddig a currentplyer: " + state.game.currentPlayerIndex);
 
-  if (size - 1 == state.game.currentPlayerID) {
-    state.game.currentPlayerID = 0;
+  if (size - 1 == state.game.currentPlayerIndex) {
+    state.game.currentPlayerIndex = 0;
   } else {
-    state.game.currentPlayerID++;
+    state.game.currentPlayerIndex++;
   }
-  console.log("most a currentplyer: " + state.game.currentPlayerID);
+  console.log("most a currentplyer: " + state.game.currentPlayerIndex);
 }
 
 export function getCardPicture(color, id) {

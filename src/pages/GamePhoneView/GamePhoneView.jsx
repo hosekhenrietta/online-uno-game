@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./GamePhoneView.css";
 import drawCard from "../../assets/cards/draw.png";
-import { drawFromDeck, nextPlayer, setPlayersHand, state, setPlayerSelectedCard, discard, getCardPicture, canDiscard } from "../../state/store";
+import { drawFromDeck, nextPlayer, setPlayersHand, state, setPlayerSelectedCard, discard, getCardPicture, canDiscard, deletePlayer, removeClient, addClient } from "../../state/store";
 import { useSnapshot } from "valtio";
+import GamePhoneViewQuitGameDialog from "./components/GamePhoneViewQuitGameDialog";
 
 export default function GamePhoneView({ room, clientId }) {
   const snapshot = useSnapshot(state)
+  const [quitGameDialogOpen, setQuitGameDialogOpen] = useState(false)
   
   const player = snapshot.game.players.find(player => player.clientId == clientId)
   const playerIndex = snapshot.game.players.indexOf(player)
@@ -42,22 +44,26 @@ export default function GamePhoneView({ room, clientId }) {
 
   // Event handlers-
   const handleDraw = (e) => {
-    console.log(clientId, snapshot.game.players[snapshot.game.currentPlayerID].clientId);
-    if(clientId === snapshot.game.players[snapshot.game.currentPlayerID].clientId) {
+    console.log(clientId, snapshot.game.players[snapshot.game.currentPlayerIndex].clientId);
+    if(clientId === snapshot.game.players[snapshot.game.currentPlayerIndex].clientId) {
       drawFromDeck(1, snapshot.game.players.indexOf(snapshot.game.players.find(player => player.clientId === clientId)))
       nextPlayer()
     } else {
-      console.log("Current:", snapshot.game.players[snapshot.game.currentPlayerID].clientId)
+      console.log("Current:", snapshot.game.players[snapshot.game.currentPlayerIndex].clientId)
     }
 
   };
 
   const handleSelect = (cardId) => {
 
+    if(snapshot.game.currentPlayerIndex !== playerIndex)
+      return
+
     console.log(snapshot.game.players[playerIndex].selectedCard, snapshot.game.players[playerIndex].hand[cardId]);
     if(JSON.stringify(snapshot.game.players[playerIndex].selectedCard) === JSON.stringify(snapshot.game.players[playerIndex].hand[cardId])) {
       console.log("Ez a selected", snapshot.game.players[playerIndex].selectedCard, snapshot.game.players[playerIndex].hand[cardId], playerIndex, cardId)
       discard(playerIndex, cardId)
+      nextPlayer()
     }
     else {
       if(canDiscard(snapshot.game.players[playerIndex].hand[cardId].color, snapshot.game.players[playerIndex].hand[cardId].value))
@@ -65,7 +71,10 @@ export default function GamePhoneView({ room, clientId }) {
     }
   };
 
-  console.log(snapshot.game.players[playerIndex].selectedCard);
+  const handleQuitGameClick = () => {
+    deletePlayer(clientId)
+    setQuitGameDialogOpen(false)
+  }
 
   return (
     <div id="container">
@@ -85,7 +94,7 @@ export default function GamePhoneView({ room, clientId }) {
               width: "8%",
               height: "20%",
               filter: blur('10px'),
-              opacity: canDiscard(card.color, card.value) ? 1 : 0.6,
+              opacity: canDiscard(card.color, card.value) && snapshot.game.currentPlayerIndex === playerIndex ? 1 : 0.6,
             }}
             onClick={(e) => handleSelect(id)}
           >
@@ -97,7 +106,10 @@ export default function GamePhoneView({ room, clientId }) {
           </div>
         ))}
       <div className="buttons">
-        <button onClick={handleDraw}> Draw from deck</button>
+        <p>{snapshot.game.currentPlayerIndex + " " + playerIndex}</p>
+        <button onClick={handleDraw} disabled={snapshot.game.currentPlayerIndex !== playerIndex}> Draw from deck</button>
+        <button onClick={() => setQuitGameDialogOpen(!quitGameDialogOpen)} disabled={snapshot.game.currentPlayerIndex !== playerIndex}>Quit game</button>
+        <GamePhoneViewQuitGameDialog quitGameDialogOpen={quitGameDialogOpen} closeQuitGameDialog={() => setQuitGameDialogOpen(false)} quitGameClick={handleQuitGameClick} />
       </div>
     </div>
   );

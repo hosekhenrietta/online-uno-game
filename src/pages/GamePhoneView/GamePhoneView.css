@@ -11,6 +11,7 @@
   left:0;right:0; /* horizontal center */
   overflow: hidden;
   aspect-ratio: 16 / 9;
+  display: flex;
 }
 
 #container .messagediv {
@@ -41,11 +42,10 @@
 
 #container .buttons {
   margin-left: 40%;
-  margin-top: 50%;
+  align-self: flex-end;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  border-radius: 25px;
   width: 20%;
 }
 

@@ -2,13 +2,22 @@ import { useEffect, useState } from "react";
 import user from "../../assets/user.png";
 import drawDeckCard from "../../assets/cards/draw.png";
 import "./GameTable.css";
-import { createGame, getCardPicture, state } from "../../state/store";
+import { getCardPicture, state } from "../../state/store";
 import { useSnapshot } from "valtio";
 
 export default function GameTable() {
   const snapshot = useSnapshot(state);
   const numberOfPlayers = state.game.players.length;
   const deltaRotation = 360 / numberOfPlayers;
+
+  useEffect(() => {
+    let time = 60
+    const interval = setInterval(() => {
+      time = time - 3
+      console.log(snapshot.clients);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const degToRad = (deg) => (deg * Math.PI) / 180;
   const drawingDeck = {
@@ -62,8 +71,6 @@ export default function GameTable() {
     } 
   })
 
-  console.log('player#0 keze: ', JSON.stringify(state.game.players[0].hand));
-  console.log('player#1 keze: ', JSON.stringify(state.game.players[1].hand));
   console.log('Snapshot throwingDeck: ', JSON.stringify(snapshot.game.throwingDeck));
   for (const [index, throwingDeckCard] of snapshot.game.throwingDeck.entries()) {
     allCardPositions = allCardPositions.map(card => {
